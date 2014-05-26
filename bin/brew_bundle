@@ -1,0 +1,34 @@
+#!/bin/bash
+if [ $# -eq 1 ]
+then
+  brewfile=$1
+elif [ $# -eq 0 ]
+then
+  brewfile="$(pwd)/Brewfile"
+else
+  echo "Usage: brew_bundle [/path/to/Brewfile]"
+  exit 1
+fi
+
+send_to_brew () {
+  echo "Running: brew $@"
+  $(which brew) $@
+  echo '-------'
+}
+
+if [[ -f $brewfile ]];
+then
+  while read line
+  do
+    if  [[ "x$line" != "x" ]] # skip blank lines
+    then
+      if [[ ! "${line::1}" == "#" ]] # skip commented lines
+      then
+        send_to_brew "$line"
+      fi
+    fi
+  done < $brewfile # read the brewfile line by line
+else
+  echo "Brewfile not found at $brewfile"
+  exit 1
+fi
