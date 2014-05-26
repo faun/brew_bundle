@@ -16,7 +16,7 @@ fi
 
 send_to_brew () {
   echo "Running: brew $@"
-  $(which brew) $@
+  brew $@
   if [[ $? != 0 ]]
   then
     errors+=1
@@ -26,7 +26,13 @@ send_to_brew () {
   echo '-------'
 }
 
-if [[ -f $brewfile ]];
+if [[ "x$(which brew)" == "x" ]]
+then
+  echo "Please install homebrew first"
+  exit 1
+fi
+
+if [[ -f $brewfile ]]
 then
   while read line
   do
