@@ -1,4 +1,8 @@
 #!/bin/bash
+declare -i errors
+declare -a package_errors
+errors=0
+
 if [ $# -eq 1 ]
 then
   brewfile=$1
@@ -13,6 +17,12 @@ fi
 send_to_brew () {
   echo "Running: brew $@"
   $(which brew) $@
+  if [[ $? != 0 ]]
+  then
+    errors+=1
+    package_errors+="$@\n"
+    echo -e "\x1b[31;1mCommand failed: brew $@\x1b[39;49m"
+  fi
   echo '-------'
 }
 
@@ -31,4 +41,11 @@ then
 else
   echo "Brewfile not found at $brewfile"
   exit 1
+fi
+
+if [[ $errors != 0 ]]
+then
+  echo "The following commands had errors:"
+  echo -e "$package_errors"
+  exit $errors
 fi
