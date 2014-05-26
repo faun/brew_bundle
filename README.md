@@ -1,7 +1,7 @@
 Brew Bundle
 ===========
 
-A replacement for brew bundle that is idempotent.
+A replacement for brew bundle that is idempotent. This script changes the behavior of `brew bundle` so that it does not exit immediately if a line in the Brewfile causes `homebrew` to exit with a non-zero status. It runs all subsequent commands in the Brewfile and returns a list of packages that had errors at the end.
 
 Installation
 ============
