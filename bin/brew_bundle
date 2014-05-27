@@ -6,7 +6,7 @@ errors=0
 if [ $# -eq 1 ]
 then
   brewfile=$1
-  if [ -d $brewfile ]
+  if [ -d "$brewfile" ]
   then
     brewfile="$brewfile/Brewfile"
   fi
