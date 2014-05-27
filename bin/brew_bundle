@@ -6,6 +6,10 @@ errors=0
 if [ $# -eq 1 ]
 then
   brewfile=$1
+  if [ -d $brewfile ]
+  then
+    brewfile="$brewfile/Brewfile"
+  fi
 elif [ $# -eq 0 ]
 then
   brewfile="$(pwd)/Brewfile"
@@ -16,8 +20,7 @@ fi
 
 send_to_brew () {
   echo "Running: brew $@"
-  brew $@
-  if [[ $? != 0 ]]
+  if ! brew $@
   then
     errors+=1
     package_errors+="$@\n"
@@ -26,7 +29,7 @@ send_to_brew () {
   echo '-------'
 }
 
-if [[ "x$(which brew)" == "x" ]]
+if ! which brew > /dev/null
 then
   echo "Please install homebrew first"
   exit 1
@@ -36,7 +39,8 @@ if [[ -f $brewfile ]]
 then
   while read line
   do
-    if  [[ "x$line" != "x" ]] # skip blank lines
+    line=$(echo "$line" | sed 's/^[ \t]*//')
+    if [ ! -z "$line" ]
     then
       if [[ ! "${line::1}" == "#" ]] # skip commented lines
       then
